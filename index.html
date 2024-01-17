@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Veículos</title>
+    <!-- Inclui o Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Inclui Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Turret+Road:wght@200;300;400;500;700;800&display=swap');
+
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            margin: 0 auto;
+            width: 85%;
+            text-align: center;
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .botoes button {
+            margin-left: 10px;
+        }
+
+        @media screen and (max-width:600px) {
+            .container {
+                width: 100%;
+            }
+
+            .botoes {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Cadastro de Veículos - Rent a Car Ltda.</h1>
+        <div class="botoes">
+            <button id="cadastrar" class="btn btn-success btn-sm">Cadastrar Novo Carro</button>
+            <button id="exibir-lista" class="btn btn-info btn-sm">Exibir Lista</button>
+            <button id="limpar-lista" class="btn btn-danger btn-sm">Limpar Lista</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Carro/Modelo</th>
+                    <th>Ano</th>
+                    <th>Marca</th>
+                    <th>Cor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Conteúdo da Tabela criado Dinâmicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        //Coleta dados       
+        const btnCadastrar = document.querySelector('#cadastrar');
+        const btnExibir = document.querySelector('#exibir-lista');
+        const btnLimpar = document.querySelector('#limpar-lista');
+        const tabela = document.querySelector('tbody');
+
+        let cadastros = [];
+
+        btnCadastrar.addEventListener('click', () => {
+            const carro = prompt('Digite o modelo do carro:');
+            const ano = prompt('Digite o ano do carro:');
+            const marca = prompt('Digite a marca do carro:');
+            const cor = prompt('Digite a cor do carro:');
+            cadastros.push(new CadastraCarro(carro, ano, marca, cor));
+            exibeTabela();
+            console.table(cadastros);
+        })
+
+        class CadastraCarro {
+            constructor(carro, ano, marca, cor) {
+                this.carro = carro;
+                this.ano = ano;
+                this.marca = marca;
+                this.cor = cor;
+            }
+        }
+
+        function exibeTabela() {
+            tabela.textContent = '';
+            if (cadastros.length !== 0) {
+                for (let i in cadastros) {
+                    let createTr = document.createElement('tr');
+                    createTr.innerHTML = `
+                <td>${cadastros[i].carro}</td>
+                <td>${cadastros[i].ano}</td>
+                <td>${cadastros[i].marca}</td>
+                <td>${cadastros[i].cor}</td>`;
+                    tabela.appendChild(createTr);
+
+                    console.log(cadastros[i].ano);
+                }
+            } else {
+                Swal.fire("Nenhum carro cadastrado!");
+            }
+        }
+
+        btnExibir.addEventListener('click', exibeTabela);
+
+        btnLimpar.addEventListener('click', () => {
+            Swal.fire({
+                title: "Você tem certeza?",
+                text: "Ao confirmae você irá apagar a sua lista!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim! Apagar!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Apagado!",
+                        text: "Sua tabela foi limpa!",
+                        icon: "success"
+                    });
+                    tabela.textContent = '';
+                    cadastros = [];
+                }
+            });
+        })
+
+    </script>
+</body>
+
+</html>
